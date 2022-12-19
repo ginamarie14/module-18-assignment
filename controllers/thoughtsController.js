@@ -71,13 +71,13 @@ module.exports = {
   
   // Create a reaction
   createReaction(req, res) {
-    if (req.body.reactionText && req.body.username) {
+    if (req.body) {
         Thought.findByIdAndUpdate(
             req.params.thoughtId,
             { $push: { reactions: { ...req.body }} },
             {runValidators: true, new: true }
         )
-        .then((thought) => thought ? res.status(200).json(thought) : res.status(404).json({ message: "No thought found with that id!" }))
+        .then((thought) => thought ? res.status(200).json(thought) : res.status(404).json({ message: "Thought not found" }))
         .catch((err) => res.status(500).json(err));
     }
     else {
