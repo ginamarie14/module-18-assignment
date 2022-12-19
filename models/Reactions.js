@@ -12,7 +12,7 @@ const reactionsSchema = new Schema(
       maxlength: 140,
       minlength: 2
     },
-    user: {
+    username: {
       type: String,
       required: true
     },
@@ -26,6 +26,12 @@ const reactionsSchema = new Schema(
       }
     },
   },
+  {
+    toJSON: {
+      getters: true,
+    },
+    id: false,
+  }
 );
 
 module.exports = reactionsSchema;

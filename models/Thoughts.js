@@ -10,7 +10,7 @@ const thoughtsSchema = new Schema(
       maxlength: 300,
       minlength: 2
     },
-    user: {
+    username: {
       type: String,
       required: true
     },

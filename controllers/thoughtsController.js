@@ -19,12 +19,29 @@ module.exports = {
   },
   // Create a thought
   createThought(req, res) {
-    Thoughts.create(req.body.thoughtPost && req.body.username && req.body.userId)
-      .then((thought) => res.json(thought))
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).json(err);
-      });
+    Thoughts.create(req.body)
+      .then((thought) => {
+        console.log(thought);
+        return User.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $push: { thoughts: thought._id } },
+          { new: true }
+        );
+      })
+    .then((user) => {
+      console.log(user);
+      if (!user) {
+        res.status(404).json({
+          message: "User not found, thought created without user",
+        });
+        return;
+      }
+      res.json(user);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
   },
   // Delete a thought
   deleteThought(req, res) {
@@ -39,13 +56,13 @@ module.exports = {
   },
   // Update a thought
   updateThought(req, res) {
-    Course.findOneAndUpdate(
+    Thoughts.findOneAndUpdate(
       { _id: req.params.thoughtId },
       { $set: req.body },
       { runValidators: true, new: true }
     )
-      .then((thought) =>
-        !thought
+      .then((updateThought) =>
+        !updateThought
           ? res.status(404).json({ message: 'No thought with this id!' })
           : res.json(thought)
       )
